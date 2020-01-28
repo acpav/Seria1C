@@ -31,7 +31,6 @@ class RelatedListReader : public TabReader1C
 {
 private:
 	std::unordered_multimap<Object1C*, CostRoute>* mmap;
-
 public:
 
 	RelatedListReader(std::wstring nameS, std::unordered_multimap<Object1C*, CostRoute>* m)
@@ -64,7 +63,6 @@ class ExceptionRouteListReader : public TabReader1C
 {
 private:
 	std::unordered_multimap<Object1C*, Object1C*>* mmap;
-
 public:
 
 	ExceptionRouteListReader(std::wstring nameS, std::unordered_multimap<Object1C*, Object1C*>* m)

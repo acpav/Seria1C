@@ -23,10 +23,8 @@ void Seria1C::GetTabs(wchar_t const* jsonStr, std::vector<TabReader1C*> tabReade
 	TabReader1C* curTabReader = nullptr;
 
 	ModeParsing mode = ModeParsing::Begin;
-	while (!reader.IterativeParseComplete() && mode != ModeParsing::End)
+	while (!reader.IterativeParseComplete() && mode != ModeParsing::End && reader.IterativeParseNext<rapidjson::kParseDefaultFlags>(ss, handler))
 	{
-		reader.IterativeParseNext<rapidjson::kParseDefaultFlags>(ss, handler);
-
 		switch (mode)
 		{
 		case ModeParsing::Begin:
@@ -136,7 +134,7 @@ void Seria1C::GetTabs(wchar_t const* jsonStr, std::vector<TabReader1C*> tabReade
 			}
 			else if (handler.type == NoteType::Int || handler.type == NoteType::Uint || handler.type == NoteType::Uint64)
 			{
-				cols.push_back((Var1C)_wtoi(handler.data.c_str()));
+				cols.push_back(GetVal(handler.type, handler.var));
 			}
 			mode = ModeParsing::ReadObject;
 			break;
@@ -254,4 +252,47 @@ std::wstring Seria1C::GetArrayJSON(std::vector<Object1C*> m)
 	json.EndObject();
 
 	return s.GetString();
+}
+
+Var1C Seria1C::GetVal(NoteType type, SimpleVar var)
+{
+	Var1C *rez = nullptr;
+
+	switch (type)
+	{
+	case NoteType::Bool:
+		if (auto pval = std::get_if<bool>(&var))
+		{
+			rez = new Var1C(*pval);
+		}
+		break;
+	case NoteType::Int:
+		if (auto pval = std::get_if<int>(&var))
+		{
+			rez = new Var1C(*pval);
+		}
+		break;
+	case NoteType::Uint:
+		if (auto pval = std::get_if<unsigned int>(&var))
+		{
+			rez = new Var1C((int)*pval);
+		}
+		break;
+	case NoteType::Uint64:
+		if (auto pval = std::get_if<int64_t>(&var))
+		{
+			rez = new Var1C(*pval);
+		}
+		break;
+	case NoteType::Double:
+		if (auto pval = std::get_if<double>(&var))
+		{
+			rez = new Var1C(*pval);
+		}
+		break;
+	default:
+		rez = new Var1C();
+		break;
+	}
+	return *rez;
 }

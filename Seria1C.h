@@ -15,6 +15,7 @@ using namespace structNSseria1C;
 class Seria1C
 {
 private:
+	
 	std::unordered_multimap<std::wstring, Object1C*> Objects;
 public:
 	Seria1C();
@@ -23,4 +24,5 @@ public:
 	Object1C* FindObj(std::wstring t, std::wstring g);
 	std::wstring GetJSON(std::vector<Object1C*> m);
 	std::wstring GetArrayJSON(std::vector<Object1C*> m);
+	Var1C GetVal(NoteType, SimpleVar);
 };

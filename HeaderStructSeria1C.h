@@ -1,8 +1,11 @@
 #pragma once
 #include <string>
+#include <variant>
 
 namespace structNSseria1C
 {
+	typedef std::variant<bool, int, unsigned, int64_t, uint64_t, double> SimpleVar;
+
 	struct Object1C
 	{
 		Object1C()
@@ -108,6 +111,23 @@ namespace structNSseria1C
 			tag = Type1C::Bool;
 		}
 
+		Var1C(double v)
+		{
+			d = v;
+			tag = Type1C::Double;
+		}
+
+		Var1C(int64_t v)
+		{
+			l = v;
+			tag = Type1C::Long;
+		}
+
+		Var1C()
+		{
+			tag = Type1C::Null;
+		}
+
 		~Var1C()
 		{
 
@@ -117,10 +137,12 @@ namespace structNSseria1C
 			Object1C* obj;
 			std::wstring str;
 			int num;
+			double d;
 			bool b;
+			int64_t l;
 		};
 
-		enum class Type1C { pObj, wStr, Int, Bool };
+		enum class Type1C { pObj, wStr, Int, Long, Double, Bool, Null};
 		Type1C tag;
 
 	};
@@ -146,16 +168,16 @@ namespace structNSseria1C
 	struct MyHandler {
 		NoteType type;
 		std::wstring data;
-
+		SimpleVar var;
 		MyHandler() : type(), data() {}
 
 		bool Null() { type = NoteType::Null; data.clear(); return true; }
-		bool Bool(bool b) { type = NoteType::Bool; data = b ? L"true" : L"false"; return true; }
-		bool Int(int i) { type = NoteType::Int; data = std::to_wstring(i); return true; }
-		bool Uint(unsigned u) { type = NoteType::Uint; data = std::to_wstring(u); return true; }
-		bool Int64(int64_t i) { type = NoteType::Int64; data = std::to_wstring(i); return true; }
-		bool Uint64(uint64_t u) { type = NoteType::Uint64; data = std::to_wstring(u); return true; }
-		bool Double(double d) { type = NoteType::Double; data = std::to_wstring(d); return true; }
+		bool Bool(bool b) { type = NoteType::Bool; var = b; return true; }
+		bool Int(int i) { type = NoteType::Int; var = i; return true; }
+		bool Uint(unsigned u) { type = NoteType::Uint; var = u; return true; }
+		bool Int64(int64_t i) { type = NoteType::Int64; var = i; return true; }
+		bool Uint64(uint64_t u) { type = NoteType::Uint64; var = u; return true; }
+		bool Double(double d) { type = NoteType::Double; var = d; return true; }
 		bool RawNumber(const wchar_t* str, size_t length, bool) { type = NoteType::Number; data = std::wstring(str, length); return true; }
 		bool String(const wchar_t* str, size_t length, bool) { type = NoteType::String; data = std::wstring(str, length); return true; }
 		bool StartObject() { type = NoteType::StartObject; data.clear(); return true; }
@@ -163,6 +185,7 @@ namespace structNSseria1C
 		bool EndObject(size_t memberCount) { type = NoteType::EndObject; data = std::to_wstring(memberCount); return true; }
 		bool StartArray() { type = NoteType::StartArray; data.clear(); return true; }
 		bool EndArray(size_t elementCount) { type = NoteType::EndArray; data = std::to_wstring(elementCount); return true; }
+
 	};
 
 	enum class ModeParsing

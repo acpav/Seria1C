@@ -205,7 +205,7 @@ vector<Object1C*> RouteLogistic::Route(Object1C* cityOut, Object1C* cityIn)
 					{
 						route.insert(route.begin() + a + 1, mDir->second);
 					}
-					a = route.size();
+					a = ctR;
 					break;
 				}
 				b--;

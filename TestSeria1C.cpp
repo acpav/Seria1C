@@ -9,8 +9,9 @@ using namespace std;
 int main(char** args)
 {
 
-	wifstream is("C:\\Users\\pavel.konev\\new 2.txt", ifstream::in);
-	is.imbue(locale(locale::empty(), new codecvt_utf8<wchar_t>));
+	wifstream is("C:\\Users\\pavel.konev\\new 2.txt", ifstream::in|| ifstream::binary);
+//	codecvt_utf8<wchar_t> *cd = new codecvt_utf8<wchar_t>;
+	is.imbue(locale("ru_RU", locale::all));
 	is.seekg(0, is.end);
 	auto lenFile = is.tellg();
 	is.seekg(0, is.beg);
@@ -29,6 +30,7 @@ int main(char** args)
 
 	//for (size_t cn = 1000; cn > 0; --cn)
 	rl.Init(buffer);
+	//rl.Init(L"");
 
 	//return 0;
 
